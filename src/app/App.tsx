@@ -3,7 +3,6 @@ import { Hero } from '@/app/components/Hero';
 import { UploadCard } from '@/app/components/UploadCard';
 import { Features } from '@/app/components/Features';
 import { IsometricGrid } from '@/app/components/IsometricGrid';
-
 export default function App() {
   return (
     <div className="min-h-screen bg-white relative overflow-hidden">
@@ -28,18 +27,14 @@ export default function App() {
           }}
         />
       </div>
-
       {/* Main content */}
       <div className="relative z-10">
-        <Navigation />
-
         <main>
           <Hero />
           <UploadCard />
           <IsometricGrid />
           <Features />
         </main>
-
         {/* Footer */}
         <footer className="relative py-12 px-6 mt-20 border-t" style={{ borderColor: 'var(--neutral-200)' }}>
           <div className="max-w-7xl mx-auto">
@@ -59,7 +54,7 @@ export default function App() {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M8 2L4 4.5V7.5C4 10 6 12.5 8 13.5C10 12.5 12 10 12 7.5V4.5L8 2Z"
+                      d="M8 2L4 4.5V7.5C4 10 6 12.5 8 13.5C10 12.5 12 10 7.5V4.5L8 2Z"
                       fill="white"
                       stroke="white"
                       strokeWidth="1.5"
@@ -77,7 +72,6 @@ export default function App() {
                   PropCheck AI
                 </span>
               </div>
-
               <div className="flex items-center gap-8 text-sm" style={{ color: 'var(--neutral-500)' }}>
                 <a href="#" className="hover:text-neutral-900 transition-colors">
                   Privacy
@@ -89,7 +83,6 @@ export default function App() {
                   Contact
                 </a>
               </div>
-
               <div className="text-sm" style={{ color: 'var(--neutral-400)' }}>
                 © {new Date().getFullYear()} PropCheck AI. All rights reserved.
               </div>

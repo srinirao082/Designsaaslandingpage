@@ -84,6 +84,7 @@ export function UploadCard() {
 
       const html = await response.text();
       setReportHtml(html);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('EC Analysis Error:', error);
       alert('Failed to analyze EC document');
@@ -101,6 +102,22 @@ export function UploadCard() {
 
   return (
     <>
+      {/* EC RESULT */}
+      {reportHtml && (
+        <section className="max-w-6xl mx-auto px-6 pb-20">
+          <h2 className="text-xl font-semibold mb-4">
+            EC Verification Report
+          </h2>
+          <div className="bg-white rounded-2xl border shadow-sm overflow-hidden">
+            <iframe
+              srcDoc={reportHtml}
+              title="EC Report"
+              style={{ width: '100%', height: '800px', border: 'none' }}
+            />
+          </div>
+        </section>
+      )}
+
       <section className="relative py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div

@@ -8,10 +8,10 @@ interface ProcessingModalProps {
 }
 
 const processingSteps = [
-  { id: 1, label: 'Reading Document', icon: FileText, duration: 2000 },
-  { id: 2, label: 'Extracting Data', icon: Sparkles, duration: 2000 },
-  { id: 3, label: 'Analyzing Risks', icon: Shield, duration: 2000 },
-  { id: 4, label: 'Generating Report', icon: CheckCircle, duration: 2000 },
+  { id: 1, label: 'Reading Document', icon: FileText, duration: 15000 },
+  { id: 2, label: 'Extracting Data', icon: Sparkles, duration: 15000 },
+  { id: 3, label: 'Analyzing Risks', icon: Shield, duration: 15000 },
+  { id: 4, label: 'Generating Report', icon: CheckCircle, duration: 15000 },
 ];
 
 export function ProcessingModal({ isOpen, fileName }: ProcessingModalProps) {

@@ -5,7 +5,7 @@ import { ProcessingModal } from './ProcessingModal';
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [reportHtml, setReportHtml] = useState<string | null>(null);
 
@@ -37,8 +37,8 @@ export function UploadCard() {
 
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
-      setUploadedFile(files[0]);
-      setReportHtml(null); // reset previous report
+      setUploadedFiles(Array.from(files));
+      setReportHtml(null);
     }
   };
 
@@ -47,13 +47,13 @@ export function UploadCard() {
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      setUploadedFile(files[0]);
-      setReportHtml(null); // reset previous report
+      setUploadedFiles(Array.from(files));
+      setReportHtml(null);
     }
   };
 
   const handleClick = () => {
-    if (!uploadedFile) {
+    if (uploadedFiles.length === 0) {
       fileInputRef.current?.click();
     }
   };
@@ -61,13 +61,15 @@ export function UploadCard() {
   /* ---------------- API CALL ---------------- */
 
   const handleAnalyze = async () => {
-    if (!uploadedFile) return;
+    if (uploadedFiles.length === 0) return;
 
     setIsProcessing(true);
 
     const formData = new FormData();
-    formData.append('file', uploadedFile);
-    formData.append('filename', uploadedFile.name);
+
+    uploadedFiles.forEach((file) => {
+      formData.append('files', file);
+    });
 
     try {
       const response = await fetch(
@@ -85,16 +87,18 @@ export function UploadCard() {
       const html = await response.text();
       setReportHtml(html);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
     } catch (error) {
       console.error('EC Analysis Error:', error);
       alert('Failed to analyze EC document');
+
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleRemoveFile = () => {
-    setUploadedFile(null);
+    setUploadedFiles([]);
     setReportHtml(null);
   };
 
@@ -102,7 +106,6 @@ export function UploadCard() {
 
   return (
     <>
-      {/* EC RESULT */}
       {reportHtml && (
         <section className="max-w-6xl mx-auto px-6 pb-20">
           <h2 className="text-xl font-semibold mb-4">
@@ -136,33 +139,34 @@ export function UploadCard() {
               style={{
                 border: isDragging
                   ? '2px solid var(--indigo-500)'
-                  : uploadedFile
+                  : uploadedFiles.length > 0
                   ? '2px solid var(--indigo-500)'
                   : '2px dashed var(--neutral-300)',
-                background: uploadedFile
+                background: uploadedFiles.length > 0
                   ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.04), rgba(168, 85, 247, 0.04))'
                   : 'white',
                 padding: '56px 48px',
                 boxShadow:
-                  isDragging || uploadedFile
+                  isDragging || uploadedFiles.length > 0
                     ? '0 0 60px rgba(99, 102, 241, 0.15)'
                     : 'none',
               }}
             >
               <div className="relative z-10 flex flex-col items-center">
+
                 <motion.div
                   className="relative w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
                   animate={{ scale: isDragging ? 1.1 : 1 }}
                   transition={{ duration: 0.2 }}
                   style={{
-                    background: uploadedFile
+                    background: uploadedFiles.length > 0
                       ? 'var(--gradient-primary)'
                       : isDragging
                       ? 'var(--gradient-primary)'
                       : 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))',
                   }}
                 >
-                  {uploadedFile ? (
+                  {uploadedFiles.length > 0 ? (
                     <FileText className="w-8 h-8 text-white" strokeWidth={2.5} />
                   ) : (
                     <Upload
@@ -174,13 +178,13 @@ export function UploadCard() {
                 </motion.div>
 
                 <div className="mt-6 text-center">
-                  {uploadedFile ? (
+                  {uploadedFiles.length > 0 ? (
                     <>
                       <p className="text-lg font-semibold text-neutral-900">
-                        {uploadedFile.name}
+                        {uploadedFiles[0]?.name}
                       </p>
                       <p className="text-sm text-neutral-500">
-                        {(uploadedFile.size / 1024).toFixed(2)} KB
+                        {(uploadedFiles[0]?.size / 1024).toFixed(2)} KB
                       </p>
                     </>
                   ) : (
@@ -194,13 +198,13 @@ export function UploadCard() {
                         Drag and drop or click to browse
                       </p>
                       <p className="text-xs text-neutral-400">
-                        Supports PDF (Max 10MB)
+                        Supports EC JSON files
                       </p>
                     </>
                   )}
                 </div>
 
-                {uploadedFile && !isProcessing && (
+                {uploadedFiles.length > 0 && !isProcessing && (
                   <button
                     onClick={handleRemoveFile}
                     className="mt-4 p-2 rounded-lg hover:bg-neutral-100"
@@ -209,7 +213,7 @@ export function UploadCard() {
                   </button>
                 )}
 
-                {uploadedFile && (
+                {uploadedFiles.length > 0 && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -224,6 +228,7 @@ export function UploadCard() {
                     </span>
                   </motion.button>
                 )}
+
               </div>
 
               <input
@@ -239,26 +244,9 @@ export function UploadCard() {
         </div>
       </section>
 
-      {/* EC RESULT */}
-      {reportHtml && (
-        <section className="max-w-6xl mx-auto px-6 pb-20">
-          <h2 className="text-xl font-semibold mb-4">
-            EC Verification Report
-          </h2>
-          <div className="bg-white rounded-2xl border shadow-sm overflow-hidden">
-            <iframe
-              srcDoc={reportHtml}
-              title="EC Report"
-              style={{ width: '100%', height: '800px', border: 'none' }}
-            />
-          </div>
-        </section>
-      )}
-
-      {/* Processing Modal */}
       <ProcessingModal
         isOpen={isProcessing}
-        fileName={uploadedFile?.name || ''}
+        fileName={uploadedFiles[0]?.name || ''}
       />
     </>
   );

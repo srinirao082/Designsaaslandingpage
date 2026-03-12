@@ -231,6 +231,7 @@ export function UploadCard() {
                 type="file"
                 className="hidden"
                 accept=".json,application/json"
+                multiple
                 onChange={handleFileSelect}
               />
             </div>

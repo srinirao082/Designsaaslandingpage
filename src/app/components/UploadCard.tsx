@@ -73,7 +73,7 @@ export function UploadCard() {
 
     try {
       const response = await fetch(
-        'https://8000-01kdwqcxfck6rpfzgst68f4hch.cloudspaces.litng.ai/predict',
+        'https://8000-01kkhbjmgmw3czc6cgcz9pp1h6.cloudspaces.litng.ai/predict',
         {
           method: 'POST',
           body: formData,

@@ -230,7 +230,7 @@ export function UploadCard() {
                 ref={fileInputRef}
                 type="file"
                 className="hidden"
-                accept=".json"
+                accept=".json,application/json"
                 onChange={handleFileSelect}
               />
             </div>
